@@ -101,7 +101,11 @@ $modulResult = $stmt->get_result();
                         </td>
 
                             <td class="border p-3 flex space-x-2">
-                                <button onclick="fillEditForm('<?= $modul['id'] ?>', '<?= htmlspecialchars($modul['judul'], ENT_QUOTES) ?>', '<?= htmlspecialchars($modul['deskripsi'], ENT_QUOTES) ?>')" class="text-blue-500 hover:underline">Edit</button>
+                                <button onclick='fillEditForm(
+                                    <?= json_encode($modul['id']) ?>,
+                                    <?= json_encode($modul['judul']) ?>,
+                                    <?= json_encode($modul['deskripsi']) ?>
+                                )' class="text-blue-500 hover:underline">Edit</button>
                                 <form method="post" onsubmit="return confirm('Hapus modul ini?')">
                                     <input type="hidden" name="delete_id" value="<?= $modul['id'] ?>">
                                     <input type="hidden" name="praktikum_id" value="<?= $praktikumId ?>">
