@@ -1,4 +1,6 @@
 <?php
+$pageTitle = 'Laporan Mahasiswa';
+$activePage = 'laporan';
 require_once 'templates/header.php';
 require_once '../config.php';
 
@@ -51,8 +53,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 ?>
 
-<div class="max-w-6xl mx-auto py-6">
-    <h1 class="text-2xl font-bold mb-4">Laporan Mahasiswa</h1>
+<div class="max-w-6xl py-6">
 
     <!-- Filter -->
     <form method="GET" class="flex flex-wrap gap-4 mb-4">
