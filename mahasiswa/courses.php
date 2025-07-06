@@ -5,6 +5,25 @@ session_start();
 $user_id = $_SESSION['user_id'] ?? null;
 $isMahasiswa = ($_SESSION['role'] ?? '') === 'mahasiswa';
 
+if (isset($_POST['daftar']) && $isMahasiswa) {
+    $praktikum_id = $_POST['praktikum_id'];
+
+    $cekStmt = $conn->prepare("SELECT * FROM krs WHERE praktikum_id = ? AND user_id = ?");
+    $cekStmt->bind_param("ii", $praktikum_id, $user_id);
+    $cekStmt->execute();
+    $cekResult = $cekStmt->get_result();
+
+    if ($cekResult->num_rows === 0) {
+        $insert = $conn->prepare("INSERT INTO krs (praktikum_id, user_id) VALUES (?, ?)");
+        $insert->bind_param("ii", $praktikum_id, $user_id);
+        $insert->execute();
+    }
+
+    header("Location: courses.php");
+    exit;
+}
+
+// -- Mulai Output
 $pageTitle = 'Katalog Praktikum';
 $activePage = 'courses';
 require_once 'templates/header_mahasiswa.php';
@@ -67,25 +86,5 @@ if ($user_id) {
         <?php endif; ?>
     </div>
 </div>
-
-<?php
-// Proses pendaftaran
-if (isset($_POST['daftar']) && $isMahasiswa) {
-    $praktikum_id = $_POST['praktikum_id'];
-
-    // Cek apakah sudah pernah daftar
-    $cekStmt = $conn->prepare("SELECT * FROM krs WHERE praktikum_id = ? AND user_id = ?");
-    $cekStmt->bind_param("ii", $praktikum_id, $user_id);
-    $cekStmt->execute();
-    $cekResult = $cekStmt->get_result();
-
-    if ($cekResult->num_rows === 0) {
-        $insert = $conn->prepare("INSERT INTO krs (praktikum_id, user_id) VALUES (?, ?)");
-        $insert->bind_param("ii", $praktikum_id, $user_id);
-        $insert->execute();
-
-    }
-}
-?>
 
 <?php require_once 'templates/footer_mahasiswa.php'; ?>
