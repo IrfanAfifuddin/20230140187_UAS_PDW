@@ -1,7 +1,7 @@
 1. Halaman Login
 ![image](https://github.com/user-attachments/assets/9bd3ef5e-236f-4508-9562-470162e2f11a)
 2. Halaman Registragi Mahasiswa
-![image](https://github.com/user-attachments/assets/6bf30521-fd6f-49e6-8daa-018up667d4bf58)
+![image](https://github.com/user-attachments/assets/e92dc205-683d-438a-955c-9739d4e026d6)
 3. Halaman Registragi Asisten
 ![image](https://github.com/user-attachments/assets/fa076e1e-63b6-4664-a470-776a35ffbc01)
 4. Dashboard Mahasiswa
