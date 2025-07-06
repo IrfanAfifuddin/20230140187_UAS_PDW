@@ -2,20 +2,21 @@
 require_once '../config.php';
 session_start();
 
+// Autentikasi role admin/asisten
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'asisten') {
+    header('Location: ../login.php');
+    exit();
+}
+
 $pageTitle = 'Dashboard';
 $activePage = 'dashboard';
 require_once 'templates/header.php';
 
-// Total modul
-$modul_total = $conn->query("SELECT COUNT(*) as total FROM modul")->fetch_assoc()['total'];
+// Data dinamis
+$modul_total = $conn->query("SELECT COUNT(*) AS total FROM modul")->fetch_assoc()['total'];
+$laporan_total = $conn->query("SELECT COUNT(*) AS total FROM laporan")->fetch_assoc()['total'];
+$laporan_pending = $conn->query("SELECT COUNT(*) AS total FROM laporan WHERE nilai IS NULL AND feedback IS NULL")->fetch_assoc()['total'];
 
-// Total laporan masuk
-$laporan_total = $conn->query("SELECT COUNT(*) as total FROM laporan")->fetch_assoc()['total'];
-
-// Total laporan belum dinilai
-$laporan_pending = $conn->query("SELECT COUNT(*) as total FROM laporan WHERE nilai IS NULL AND feedback IS NULL")->fetch_assoc()['total'];
-
-// Aktivitas laporan terbaru (5 terakhir)
 $latest = $conn->query("
     SELECT l.uploaded_at, u.nama, m.judul 
     FROM laporan l 
@@ -29,8 +30,8 @@ $latest = $conn->query("
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
         <div class="bg-blue-100 p-3 rounded-full">
-            <svg class="w-6 h-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75..." />
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v12M6.75 6H18a.75.75 0 01.75.75v11.25a.75.75 0 01-.75.75H6.75a.75.75 0 01-.75-.75V6.75A.75.75 0 016.75 6z"/>
             </svg>
         </div>
         <div>
@@ -41,8 +42,8 @@ $latest = $conn->query("
 
     <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
         <div class="bg-green-100 p-3 rounded-full">
-            <svg class="w-6 h-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12.75L11.25 15 15 9.75..." />
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/>
             </svg>
         </div>
         <div>
@@ -53,8 +54,8 @@ $latest = $conn->query("
 
     <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
         <div class="bg-yellow-100 p-3 rounded-full">
-            <svg class="w-6 h-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6h4.5..." />
+            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v3.5m0 3.5h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
         </div>
         <div>
@@ -73,7 +74,9 @@ $latest = $conn->query("
                     <span class="font-bold text-gray-500"><?= strtoupper(substr($row['nama'], 0, 2)) ?></span>
                 </div>
                 <div>
-                    <p class="text-gray-800"><strong><?= htmlspecialchars($row['nama']) ?></strong> mengumpulkan laporan untuk <strong><?= htmlspecialchars($row['judul']) ?></strong></p>
+                    <p class="text-gray-800">
+                        <strong><?= htmlspecialchars($row['nama']) ?></strong> mengumpulkan laporan untuk <strong><?= htmlspecialchars($row['judul']) ?></strong>
+                    </p>
                     <p class="text-sm text-gray-500"><?= date('d M Y H:i', strtotime($row['uploaded_at'])) ?></p>
                 </div>
             </div>
